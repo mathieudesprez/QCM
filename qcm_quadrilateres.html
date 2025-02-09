@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>QCM - Les quadrilatères et leurs propriétés</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 20px;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #resultat {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #27ae60;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>QCM : Les quadrilatères et leurs propriétés</h1>
+    <form id="qcm">
+        <p><strong>Question 1 :</strong> Un parallélogramme est un quadrilatère dont :</p>
+        <input type="radio" name="q1" value="A"> (A) Les côtés opposés sont parallèles<br>
+        <input type="radio" name="q1" value="B"> (B) Les diagonales sont perpendiculaires<br>
+        <input type="radio" name="q1" value="C"> (C) Tous les côtés sont de même longueur<br><br>
+
+        <p><strong>Question 2 :</strong> Dans un losange, les diagonales sont :</p>
+        <input type="radio" name="q2" value="A"> (A) Égales mais non perpendiculaires<br>
+        <input type="radio" name="q2" value="B"> (B) Perpendiculaires et égales<br>
+        <input type="radio" name="q2" value="C"> (C) Perpendiculaires mais non égales<br><br>
+
+        <p><strong>Question 3 :</strong> Un rectangle est un parallélogramme ayant :</p>
+        <input type="radio" name="q3" value="A"> (A) Quatre côtés égaux<br>
+        <input type="radio" name="q3" value="B"> (B) Ses angles droits<br>
+        <input type="radio" name="q3" value="C"> (C) Ses diagonales perpendiculaires<br><br>
+
+        <button type="button" onclick="corriger()">Corriger</button>
+    </form>
+    <p id="resultat"></p>
+
+    <script>
+        function corriger() {
+            var score = 0;
+            var total = 3;  // Mettre à jour avec le nombre total de questions
+            if (document.querySelector('input[name="q1"]:checked')?.value === "A") score++;
+            if (document.querySelector('input[name="q2"]:checked')?.value === "C") score++;
+            if (document.querySelector('input[name="q3"]:checked')?.value === "B") score++;
+            
+            document.getElementById('resultat').innerHTML = "Votre score : " + score + " / " + total;
+
+            // Verrouiller toutes les questions après correction
+            var inputs = document.querySelectorAll('input[type="radio"]');
+            inputs.forEach(function(input) {
+                input.disabled = true;
+            });
+
+            // Désactiver le bouton "Corriger"
+            document.querySelector('button').disabled = true;
+        }
+    </script>
+</body>
+</html>
