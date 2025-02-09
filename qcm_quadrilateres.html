@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -31,7 +32,7 @@
             font-size: 16px;
             margin-bottom: 10px;
         }
-        input[type="radio"] {
+        input[type="radio"], input[type="text"] {
             margin-right: 10px;
         }
         button {
@@ -53,11 +54,22 @@
             color: #27ae60;
             text-align: center;
         }
+        #timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>QCM : Les quadrilatères et leurs propriétés</h1>
+    <div id="timer">Temps restant : 5:00</div>
     <form id="qcm">
+        <p><strong>Nom :</strong> <input type="text" id="nom" placeholder="Votre nom"></p>
+        <p><strong>Prénom :</strong> <input type="text" id="prenom" placeholder="Votre prénom"></p><br>
+
         <p><strong>Question 1 :</strong> Un parallélogramme est un quadrilatère dont :</p>
         <input type="radio" name="q1" value="A"> (A) Les côtés opposés sont parallèles<br>
         <input type="radio" name="q1" value="B"> (B) Les diagonales sont perpendiculaires<br>
@@ -68,32 +80,50 @@
         <input type="radio" name="q2" value="B"> (B) Perpendiculaires et égales<br>
         <input type="radio" name="q2" value="C"> (C) Perpendiculaires mais non égales<br><br>
 
-        <p><strong>Question 3 :</strong> Un rectangle est un parallélogramme ayant :</p>
-        <input type="radio" name="q3" value="A"> (A) Quatre côtés égaux<br>
-        <input type="radio" name="q3" value="B"> (B) Ses angles droits<br>
-        <input type="radio" name="q3" value="C"> (C) Ses diagonales perpendiculaires<br><br>
-
         <button type="button" onclick="corriger()">Corriger</button>
     </form>
     <p id="resultat"></p>
 
     <script>
+        let timeLeft = 300;  // Temps total en secondes (5 minutes)
+
+        // Timer pour décompter le temps
+        const timerElement = document.getElementById('timer');
+        const timer = setInterval(() => {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            timerElement.textContent = `Temps restant : ${minutes}:${seconds}`;
+            timeLeft--;
+
+            if (timeLeft < 0) {
+                clearInterval(timer);
+                verrouillerQCM();
+                timerElement.textContent = "Temps écoulé !";
+            }
+        }, 1000);
+
         function corriger() {
+            if (!document.getElementById('nom').value || !document.getElementById('prenom').value) {
+                alert("Veuillez entrer votre nom et prénom.");
+                return;
+            }
+
             var score = 0;
-            var total = 3;  // Mettre à jour avec le nombre total de questions
+            var total = 2;  // Nombre total de questions
             if (document.querySelector('input[name="q1"]:checked')?.value === "A") score++;
             if (document.querySelector('input[name="q2"]:checked')?.value === "C") score++;
-            if (document.querySelector('input[name="q3"]:checked')?.value === "B") score++;
-            
-            document.getElementById('resultat').innerHTML = "Votre score : " + score + " / " + total;
 
-            // Verrouiller toutes les questions après correction
-            var inputs = document.querySelectorAll('input[type="radio"]');
+            document.getElementById('resultat').innerHTML = `Nom : ${document.getElementById('nom').value}<br>Prénom : ${document.getElementById('prenom').value}<br>Votre score : ${score} / ${total}`;
+            
+            verrouillerQCM();
+        }
+
+        function verrouillerQCM() {
+            var inputs = document.querySelectorAll('input');
             inputs.forEach(function(input) {
                 input.disabled = true;
             });
-
-            // Désactiver le bouton "Corriger"
             document.querySelector('button').disabled = true;
         }
     </script>
