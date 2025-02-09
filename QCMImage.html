@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>QCM : Triangle Rectangle</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .question-text {
+            width: 60%;
+        }
+        .question-pdf {
+            width: 35%;
+        }
+        .question-pdf iframe {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #resultat {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>QCM : Triangle Rectangle en A</h1>
+    <form id="qcm">
+        <div class="question">
+            <div class="question-text">
+                <p><strong>Question 1 :</strong> En regardant le PDF à droite, quel est l’hypoténuse du triangle rectangle en A ?</p>
+                <input type="radio" name="q1" value="A"> (A) [AB]<br>
+                <input type="radio" name="q1" value="B"> (B) [AC]<br>
+                <input type="radio" name="q1" value="C"> (C) [BC]<br>
+                <span id="emoji1"></span>
+            </div>
+            <div class="question-pdf">
+                <iframe src="TriangleRec1.pdf" title="Figure Triangle Rectangle"></iframe>
+            </div>
+        </div>
+
+        <button type="button" onclick="corriger()">Corriger</button>
+    </form>
+    <p id="resultat"></p>
+
+    <script>
+        function corriger() {
+            let score = 0;
+            const total = 1;
+
+            // Question 1
+            if (document.querySelector('input[name="q1"]:checked')?.value === "C") {
+                score++;
+                document.getElementById('emoji1').innerHTML = '<span style="color:green;">✅ Bonne réponse !</span>';
+            } else {
+                document.getElementById('emoji1').innerHTML = '<span style="color:red;">❌ Mauvaise réponse</span>';
+            }
+
+            document.getElementById('resultat').innerHTML = `Votre score : ${score} / ${total}`;
+        }
+    </script>
+</body>
+</html>
