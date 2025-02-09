@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Triangle Rectangle en A - GeoGebra</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        #triangle-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script type="text/javascript" src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+    <h1>Triangle Rectangle en A</h1>
+    <p>Voici un triangle rectangle en A. Identifie l’hypoténuse et les autres côtés.</p>
+    
+    <div id="triangle-container">
+        <div id="ggb-element"></div>
+    </div>
+
+    <script type="text/javascript">
+        var parameters = {
+            "id": "ggb-element",
+            "appName": "geometry",
+            "width": 600,
+            "height": 400,
+            "showToolbar": false,
+            "showMenuBar": false,
+            "showAlgebraInput": false,
+            "filename": "https://www.geogebra.org/material/iframe/id/pjgfadpu"
+        };
+        var applet = new GGBApplet(parameters, true);
+        window.addEventListener("load", function() { applet.inject('ggb-element'); });
+    </script>
+</body>
+</html>
