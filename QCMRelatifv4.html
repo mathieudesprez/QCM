@@ -125,7 +125,7 @@
                 const nombre2 = getRandomInt(-15, 15);
                 const operation = getRandomOperation();
                 const correctAnswer = eval(`${nombre1} ${operation} ${nombre2}`);
-                const wrongAnswers = generateWrongAnswers(correctAnswer, nombre1, nombre2, operation);
+                const wrongAnswers = generateWrongAnswers(correctAnswer, nombre1, nombre2);
 
                 // Crée une question sous forme de div
                 const questionDiv = document.createElement('div');
@@ -201,13 +201,19 @@
             return Math.random() < 0.5 ? '+' : '-';
         }
 
-        function generateWrongAnswers(correctAnswer, nombre1, nombre2, operation) {
+        function generateWrongAnswers(correctAnswer, nombre1, nombre2) {
             let wrongAnswers = [];
-            wrongAnswers.push(-correctAnswer); // Inversion de signe
-            wrongAnswers.push(nombre1 + nombre2); // Addition au lieu de soustraction
-            let inverseResult = operation === '+' ? nombre2 - nombre1 : nombre2 + nombre1;
-            wrongAnswers.push(inverseResult); // Inversion des nombres
-            return shuffleArray(wrongAnswers);
+
+            if (correctAnswer === 0) {
+                wrongAnswers.push(-14, 14, 0);
+            } else {
+                const distance1 = Math.abs(nombre1);
+                const distance2 = Math.abs(nombre2);
+                wrongAnswers.push(distance1 + distance2, -(distance1 + distance2), distance1 - distance2);
+            }
+
+            wrongAnswers.push(getRandomInt(-20, 20)); // Ajoute un nombre aléatoire
+            return shuffleArray([...new Set(wrongAnswers)]).slice(0, 4);
         }
 
         function shuffleArray(array) {
