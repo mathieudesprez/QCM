@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>QCM : Additions et Soustractions de Nombres Relatifs</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question-text {
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #resultat {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+        #code-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>QCM : Additions et Soustractions de Nombres Relatifs</h1>
+
+    <div id="code-section">
+        <p>Veuillez entrer le code à 5 lettres pour accéder au QCM :</p>
+        <input type="text" id="access-code" maxlength="5" placeholder="Code à 5 lettres">
+        <button type="button" onclick="verifierCode()">Valider</button>
+        <p id="code-error" style="color: red; display: none;">Code incorrect. Veuillez réessayer.</p>
+    </div>
+
+    <div id="timer">Temps restant : 6:00</div>
+
+    <form id="qcm">
+        <!-- Les questions seront générées dynamiquement -->
+    </form>
+    <p id="resultat"></p>
+
+    <script>
+        const codeCorrect = "ABCDE"; // Le code à 5 lettres
+        let timer;
+
+        function verifierCode() {
+            const codeEntre = document.getElementById('access-code').value.toUpperCase();
+            if (codeEntre === codeCorrect) {
+                document.getElementById('qcm').style.display = "block";
+                document.getElementById('code-section').style.display = "none";
+                document.getElementById('timer').style.display = "block";
+                lancerTimer(6 * 60); // 10 minutes en secondes
+                genererQuestions();
+            } else {
+                document.getElementById('code-error').style.display = "block";
+            }
+        }
+
+        function lancerTimer(duree) {
+            const timerElement = document.getElementById('timer');
+            timer = setInterval(() => {
+                let minutes = Math.floor(duree / 60);
+                let secondes = duree % 60;
+                secondes = secondes < 10 ? '0' + secondes : secondes;
+                timerElement.textContent = `Temps restant : ${minutes}:${secondes}`;
+                duree--;
+
+                if (duree < 0) {
+                    clearInterval(timer);
+                    verrouillerQuestions();
+                    timerElement.textContent = "Temps écoulé ! Le QCM est verrouillé.";
+                }
+            }, 1000);
+        }
+
+        function verrouillerQuestions() {
+            const inputs = document.querySelectorAll('input[type="radio"]');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+        }
+
+        function genererQuestions() {
+            const form = document.getElementById('qcm');
+            form.innerHTML = ''; // Vider le formulaire avant de générer les questions
+
+            for (let i = 1; i <= 10; i++) {
+                const nombre1 = getRandomInt(-15, 15);
+                const nombre2 = getRandomInt(-15, 15);
+                const operation = getRandomOperation();
+                const correctAnswer = eval(`${nombre1} ${operation} ${nombre2}`);
+                const wrongAnswers = generateWrongAnswers(correctAnswer);
+
+                // Crée une question sous forme de div
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                const questionText = `
+                    <div class="question-text">
+                        <p><strong>Question ${i} :</strong> Calculez ${nombre1} ${operation} ${nombre2}.</p>
+                        <input type="radio" name="q${i}" value="${correctAnswer}"> (A) ${correctAnswer}<br>
+                        <input type="radio" name="q${i}" value="${wrongAnswers[0]}"> (B) ${wrongAnswers[0]}<br>
+                        <input type="radio" name="q${i}" value="${wrongAnswers[1]}"> (C) ${wrongAnswers[1]}<br>
+                        <span id="emoji${i}"></span>
+                    </div>
+                `;
+
+                questionDiv.innerHTML = questionText;
+                form.appendChild(questionDiv);
+            }
+
+            const corrigerButton = document.createElement('button');
+            corrigerButton.type = 'button';
+            corrigerButton.textContent = 'Corriger';
+            corrigerButton.onclick = corriger;
+            form.appendChild(corrigerButton);
+        }
+
+        function corriger() {
+            let score = 0;
+            const total = 10;
+
+            for (let i = 1; i <= total; i++) {
+                const question = document.querySelector(`input[name="q${i}"]:checked`);
+                const emoji = document.getElementById(`emoji${i}`);
+                const correctAnswer = eval(question.parentElement.querySelector('p').textContent.split('Calculez ')[1].replace(/=/g, ''));
+
+                if (question && parseInt(question.value) === correctAnswer) {
+                    score++;
+                    emoji.innerHTML = '<span style="color:green;">✅ Bonne réponse !</span>';
+                } else {
+                    emoji.innerHTML = '<span style="color:red;">❌ Mauvaise réponse.</span>';
+                }
+            }
+
+            document.getElementById('resultat').innerHTML = `Votre score : ${score} / ${total}`;
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomOperation() {
+            return Math.random() < 0.5 ? '+' : '-';
+        }
+
+        function generateWrongAnswers(correctAnswer) {
+            const wrong1 = correctAnswer + getRandomInt(1, 5);
+            const wrong2 = correctAnswer - getRandomInt(1, 5);
+            return [wrong1, wrong2];
+        }
+    </script>
+</body>
+</html>
