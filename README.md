@@ -1,5 +1,6 @@
 # Index des QCM
 
-Voici la liste des fichiers disponibles :
+Voici la liste des QCM disponibles dans ce dépôt :
 
-- [QCM Mathématiques 5e](./QCMRelatifv4
+- [QCM Relatif v4](./QCMRelatifv4.html)
+- 
