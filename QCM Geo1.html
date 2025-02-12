@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>QCM : Quadrilatères et Triangles</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question-text {
+            margin-bottom: 10px;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+        .score-feedback {
+            font-size: 16px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #resultat {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+        #code-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>QCM : Quadrilatères et Triangles</h1>
+
+    <div id="code-section">
+        <p>Veuillez entrer le code à 5 lettres pour accéder au QCM :</p>
+        <input type="text" id="access-code" maxlength="5" placeholder="Code à 5 lettres">
+        <button type="button" onclick="verifierCode()">Valider</button>
+        <p id="code-error" style="color: red; display: none;">Code incorrect. Veuillez réessayer.</p>
+    </div>
+
+    <div id="timer">Temps restant : 10:00</div>
+
+    <form id="qcm"></form>
+    <p id="resultat"></p>
+
+    <script>
+        const codeCorrect = "ABCDE";
+        let timer;
+        const questions = [
+            { text: "Quel quadrilatère possède ses côtés opposés parallèles ?", options: ["Rectangle", "Losange", "Carré", "Trapèze"], correct: [0, 1, 2] },
+            { text: "Quelle est la définition d’un rectangle ?", options: ["Quadrilatère avec quatre côtés égaux", "Quadrilatère avec quatre angles droits", "Quadrilatère avec des diagonales perpendiculaires", "Quadrilatère avec deux axes de symétrie"], correct: [1, 3] },
+            { text: "Les diagonales du losange sont...", options: ["De même longueur", "Perpendiculaires", "Axes de symétrie", "Se coupent en leur milieu"], correct: [1, 2, 3] },
+            { text: "Quelles sont les propriétés d’un carré ?", options: ["Ses diagonales se coupent en leur milieu", "Ses diagonales sont de même longueur", "Ses diagonales sont perpendiculaires", "Il possède un seul axe de symétrie"], correct: [0, 1, 2] },
+            { text: "Quel est un triangle qui a trois côtés de longueurs différentes ?", options: ["Triangle isocèle", "Triangle équilatéral", "Triangle rectangle", "Triangle scalène"], correct: [3] },
+            { text: "Un triangle équilatéral possède...", options: ["Trois côtés égaux", "Deux angles égaux", "Trois angles de 60°", "Un seul axe de symétrie"], correct: [0, 2] },
+            { text: "Les angles à la base d’un triangle isocèle sont...", options: ["Égaux", "Différents", "Droits", "Aigus"], correct: [0] },
+            { text: "Le côté opposé à l’angle droit dans un triangle rectangle est appelé...", options: ["Base", "Hypoténuse", "Médiatrice", "Hauteur"], correct: [1] },
+            { text: "Quelle est une propriété d’un triangle rectangle isocèle ?", options: ["Deux côtés égaux", "Trois côtés égaux", "Deux angles de 45°", "Hypoténuse égale à la base"], correct: [0, 2] },
+            { text: "Le carré est un cas particulier de...", options: ["Rectangle", "Losange", "Trapèze", "Parallélogramme"], correct: [0, 1, 3] },
+            { text: "Le parallélogramme possède...", options: ["Deux axes de symétrie", "Un centre de symétrie", "Des diagonales perpendiculaires", "Des côtés opposés parallèles"], correct: [1, 3] },
+            { text: "Quel quadrilatère a ses quatre côtés de même longueur et deux axes de symétrie ?", options: ["Rectangle", "Losange", "Trapèze", "Parallélogramme"], correct: [1] },
+            { text: "Dans un carré, les diagonales...", options: ["Sont perpendiculaires", "Se coupent en leur milieu", "Sont de même longueur", "Sont axes de symétrie"], correct: [0, 1, 2, 3] },
+            { text: "Les angles d’un triangle équilatéral mesurent...", options: ["45°", "60°", "90°", "30°"], correct: [1] },
+            { text: "Le théorème de Pythagore est utilisé pour...", options: ["Calculer un angle dans un triangle", "Calculer un côté dans un triangle rectangle", "Prouver qu’un triangle est équilatéral", "Prouver qu’un triangle est rectangle"], correct: [1, 3] },
+            { text: "Un triangle scalène possède...", options: ["Trois côtés égaux", "Deux côtés égaux", "Trois côtés différents", "Un angle droit"], correct: [2] },
+            { text: "Le losange est toujours...", options: ["Un parallélogramme", "Un carré", "Un trapèze", "Un rectangle"], correct: [0] },
+            { text: "Dans un triangle isocèle rectangle, les angles non droits mesurent...", options: ["30°", "45°", "60°", "90°"], correct: [1] },
+            { text: "Quel quadrilatère possède des diagonales perpendiculaires qui se coupent en leur milieu ?", options: ["Rectangle", "Losange", "Carré", "Trapèze"], correct: [1, 2] },
+            { text: "Dans un triangle, la somme des mesures des angles est toujours...", options: ["180°", "360°", "90°", "270°"], correct: [0] }
+        ];
+        
+        function verifierCode() {
+            const codeEntre = document.getElementById('access-code').value.toUpperCase();
+            if (codeEntre === codeCorrect) {
+                document.getElementById('qcm').style.display = "block";
+                document.getElementById('code-section').style.display = "none";
+                document.getElementById('timer').style.display = "block";
+                lancerTimer(10 * 60);
+                genererQuestions();
+            } else {
+                document.getElementById('code-error').style.display = "block";
+            }
+        }
+
+        function lancerTimer(duree) {
+            const timerElement = document.getElementById('timer');
+            timer = setInterval(() => {
+                let minutes = Math.floor(duree / 60);
+                let secondes = duree % 60;
+                secondes = secondes < 10 ? '0' + secondes : secondes;
+                timerElement.textContent = `Temps restant : ${minutes}:${secondes}`;
+                duree--;
+                if (duree < 0) {
+                    clearInterval(timer);
+                    verrouillerQuestions();
+                    timerElement.textContent = "Temps écoulé ! Le QCM est verrouillé.";
+                }
+            }, 1000);
+        }
+
+        function verrouillerQuestions() {
+            const inputs = document.querySelectorAll('input[type="checkbox"]');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function genererQuestions() {
+            shuffleArray(questions); // Mélanger les questions
+            const form = document.getElementById('qcm');
+            const selectedQuestions = questions.slice(0, 10); // Sélectionner 10 questions au hasard
+            selectedQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                let questionHTML = `<div class="question-text"><p><strong>Question ${index + 1} :</strong> ${q.text}</p>`;
+                q.options.forEach((option, i) => {
+                    questionHTML += `<input type="checkbox" name="q${index}" value="${i}"> ${String.fromCharCode(65 + i)}) ${option}<br>`;
+                });
+                questionHTML += `</div>`;
+                questionDiv.innerHTML = questionHTML;
+                form.appendChild(questionDiv);
+            });
+
+            const corrigerButton = document.createElement('button');
+            corrigerButton.type = 'button';
+            corrigerButton.textContent = 'Corriger';
+            corrigerButton.onclick = corriger;
+            form.appendChild(corrigerButton);
+        }
+
+        function corriger() {
+            let score = 0;
+            const total = 10;  // Nombre de questions affichées
+
+            const questionsDiv = document.querySelectorAll('.question');
+            questionsDiv.forEach((questionDiv, index) => {
+                const checkedOptions = document.querySelectorAll(`input[name="q${index}"]:checked`);
+                const correctOptions = questions[index].correct;
+                const selectedAnswers = Array.from(checkedOptions).map(input => parseInt(input.value));
+
+                let points = 0;
+                correctOptions.forEach(opt => {
+                    if (selectedAnswers.includes(opt)) {
+                        points += (1 / correctOptions.length);
+                    }
+                });
+
+                score += Math.min(points, 1);  // Maximum 1 point par question
+
+                // Feedback par question avec emoji
+                let emoji = points === 1 ? '😎' : points >= 0.5 ? '😊' : '😞';
+                const feedback = document.createElement('div');
+                feedback.classList.add('score-feedback');
+                feedback.innerHTML = `Score pour cette question : ${points.toFixed(2)} ${emoji}`;
+                questionDiv.appendChild(feedback);
+
+                // Marquage des bonnes et mauvaises réponses
+                questionDiv.querySelectorAll('input[type="checkbox"]').forEach((checkbox, i) => {
+                    const label = document.createElement('span');
+                    if (correctOptions.includes(i)) {
+                        label.innerHTML = `✔️ ${String.fromCharCode(65 + i)}) ${questions[index].options[i]}`;
+                        label.classList.add('correct');
+                    } else if (selectedAnswers.includes(i)) {
+                        label.innerHTML = `❌ ${String.fromCharCode(65 + i)}) ${questions[index].options[i]}`;
+                        label.classList.add('incorrect');
+                    }
+                    questionDiv.appendChild(label);
+                    questionDiv.appendChild(document.createElement('br'));
+                });
+            });
+
+            document.getElementById('resultat').innerHTML = `Votre score total : ${score.toFixed(2)} / ${total}`;
+            verrouillerQuestions();
+        }
+    </script>
+</body>
+</html>
