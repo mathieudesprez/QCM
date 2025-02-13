@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>QCM : Quadrilatères et Triangles</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        #timer {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e74c3c;
+        }
+        form {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .feedback {
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .feedback.green {
+            background-color: #3CB371; /* MediumSeaGreen */
+            color: white;
+        }
+        .feedback.greenlight {
+            background-color: #90EE90; /* LightGreen */
+            color: #006400; /* DarkGreen */
+        }
+        .feedback.greendark {
+            background-color: #228B22; /* ForestGreen */
+            color: white;
+        }
+        .feedback.orange {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        .feedback.red {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        #resultat {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>QCM : Quadrilatères et Triangles</h1>
+    <div id="timer">Temps restant : 10:00</div>
+    <button onclick="demanderCode()">Afficher le QCM</button>
+    <form id="qcm"></form>
+    <p id="resultat"></p>
+
+    <script>
+        const questions = [
+            { "text": "Quel quadrilatère possède ses côtés opposés parallèles ?", "options": ["Rectangle", "Losange", "Carré", "Trapèze"], "correct": [0, 1, 2] },
+            { "text": "Quelles sont les propriétés d'un parallélogramme ?", "options": ["Côtés opposés parallèles", "Diagonales de même longueur", "Centre de symétrie", "Diagonales perpendiculaires"], "correct": [0, 2] },
+            { "text": "Quelle est la définition correcte d’un losange ?", "options": ["Quadrilatère avec 4 côtés égaux", "Parallélogramme avec diagonales perpendiculaires", "Rectangle avec 4 angles droits", "Quadrilatère quelconque"], "correct": [0, 1] },
+            { "text": "Quelles sont les propriétés d’un carré ?", "options": ["4 côtés égaux", "4 angles droits", "Diagonales perpendiculaires", "Un seul axe de symétrie"], "correct": [0, 1, 2] },
+            { "text": "Parmi les quadrilatères suivants, lequel est toujours un parallélogramme ?", "options": ["Carré", "Rectangle", "Trapèze rectangle", "Trapèze isocèle"], "correct": [0, 1] },
+            { "text": "Quelles sont les propriétés d’un losange ?", "options": ["Les diagonales sont perpendiculaires", "Les diagonales sont de même longueur", "Il possède un centre de symétrie", "Les diagonales se coupent en leur milieu"], "correct": [0, 2, 3] },
+            { "text": "Quelles sont les définitions correctes d’un carré ?", "options": ["C’est un rectangle avec 4 côtés de même longueur", "C’est un losange avec 4 angles droits", "C’est un parallélogramme avec des diagonales de même longueur", "C’est un quadrilatère quelconque"], "correct": [0, 1, 2] },
+            { "text": "Quelle est la définition d’un parallélogramme ?", "options": ["Un quadrilatère avec ses diagonales perpendiculaires", "Un quadrilatère avec un seul axe de symétrie", "Un quadrilatère avec des côtés opposés parallèles", "Un quadrilatère avec ses diagonales égales"], "correct": [2] },
+            { "text": "Quelle est la propriété des diagonales d’un rectangle ?", "options": ["Elles sont perpendiculaires", "Elles sont de même longueur", "Elles ne se croisent pas", "Elles sont axes de symétrie"], "correct": [1] },
+            { "text": "Quel quadrilatère a exactement deux axes de symétrie ?", "options": ["Le losange", "Le carré", "Le rectangle", "Le trapèze isocèle"], "correct": [2] }
+        ];
+
+        let timer;
+        let timerRunning = false;
+
+        function demanderCode() {
+            const code = prompt("Veuillez entrer le code pour afficher le QCM :");
+            if (code === "LOSANGE") {
+                afficherQCM();
+            } else {
+                alert("Code incorrect !");
+            }
+        }
+
+        function afficherQCM() {
+            const questionsAleatoires = tirerQuestionsAleatoires(questions, 10);
+            genererQuestions(questionsAleatoires);
+            if (!timerRunning) {
+                lancerTimer(10 * 60);
+                timerRunning = true;
+            }
+        }
+
+        function tirerQuestionsAleatoires(array, n) {
+            const shuffled = array.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, n);
+        }
+
+        function genererQuestions(questionsToDisplay) {
+            const form = document.getElementById('qcm');
+            form.innerHTML = "";
+
+            questionsToDisplay.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                let questionHTML = `<div class="question-text"><p><strong>Question ${index + 1} :</strong> ${q.text}</p>`;
+                q.options.forEach((option, i) => {
+                    questionHTML += `<input type="checkbox" name="q${index}" value="${i}"> ${String.fromCharCode(65 + i)}) ${option}<br>`;
+                });
+                questionHTML += `</div>`;
+                questionDiv.innerHTML = questionHTML;
+                form.appendChild(questionDiv);
+            });
+
+            const corrigerButton = document.createElement('button');
+            corrigerButton.type = 'button';
+            corrigerButton.textContent = 'Corriger';
+            corrigerButton.onclick = corriger;
+            form.appendChild(corrigerButton);
+        }
+
+        function lancerTimer(duration) {
+            let timerDisplay = document.getElementById('timer');
+            timer = setInterval(() => {
+                const minutes = Math.floor(duration / 60);
+                const seconds = duration % 60;
+                timerDisplay.textContent = `Temps restant : ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                duration--;
+
+                if (duration < 0) {
+                    clearInterval(timer);
+                    verrouillerQuestions();
+                    timerDisplay.textContent = "Temps écoulé !";
+                }
+            }, 1000);
+        }
+
+        function verrouillerQuestions() {
+            const inputs = document.querySelectorAll('input[type="checkbox"]');
+            inputs.forEach(input => input.disabled = true);
+        }
+
+        function corriger() {
+            clearInterval(timer);
+            verrouillerQuestions();
+
+            let score = 0;
+            const questionsDiv = document.querySelectorAll('.question');
+            let toutesReponsesValides = true;
+
+            questionsDiv.forEach((questionDiv, index) => {
+                const checkedOptions = document.querySelectorAll(`input[name="q${index}"]:checked`);
+                if (checkedOptions.length === 0) {
+                    toutesReponsesValides = false;
+                    questionDiv.style.border = "2px solid red";
+                } else {
+                    questionDiv.style.border = "none";
+                }
+            });
+
+            if (!toutesReponsesValides) {
+                alert("Veuillez cocher au moins une réponse pour chaque question !");
+                return;
+            }
+
+            questionsDiv.forEach((questionDiv, index) => {
+                const checkedOptions = document.querySelectorAll(`input[name="q${index}"]:checked`);
+                const selectedAnswers = Array.from(checkedOptions).map(input => parseInt(input.value));
+                const correctOptions = questions[index].correct;  // Tableau des indices des bonnes réponses
+                const nombreDeBonnesReponses = correctOptions.length;  // Nombre de bonnes réponses
+                let points = 0;
+                correctOptions.forEach(opt => {
+                    if (selectedAnswers.includes(opt)) points += 1/nombreDeBonnesReponses;
+                });
+
+                for (let i = 0; i < questions[index].options.length; i++) {
+                    if (!correctOptions.includes(i) && selectedAnswers.includes(i)) {
+                        points -= 0.25*nombreDeBonnesReponses;  // Retire 0.25 point pour chaque mauvaise réponse cochée
+                    }
+                }
+                points = Math.max(0, Math.min(points, 1));
+                score += points;
+
+                const feedback = document.createElement('div');
+                feedback.classList.add('feedback');
+                if (points === 1) {
+                    feedback.classList.add('greendark');
+                    feedback.textContent = "Parfait ! Toutes les bonnes réponses sont sélectionnées. ✔️ 😎";
+                } else if (points >= 0.75 && points < 1) {
+                    feedback.classList.add('green');
+                    feedback.textContent = `Partiellement parfait : ${Math.round(points * 100)}% des points. 😊`;
+                } else if (points >= 0.5 && points < 0.75) {
+                    feedback.classList.add('greenlight');
+                    feedback.textContent = `Partiellement correct : ${Math.round(points * 100)}% des points. 🤔`;
+                } else if (points > 0 && points < 0.5) {
+                    feedback.classList.add('orange');
+                    feedback.textContent = `Partiellement correct : ${Math.round(points * 100)}% des points. ⚠️🤔`;
+                } else {
+                    feedback.classList.add('red');
+                    feedback.textContent = "Incorrect : aucune bonne réponse. ❌ 😲";
+                }
+                questionDiv.appendChild(feedback);
+            });
+
+            document.getElementById('resultat').innerHTML = `Votre score total : ${score.toFixed(2)} / 10`;
+        }
+    </script>
+</body>
+</html>
