@@ -22,7 +22,9 @@ Ce projet propose un **QCM interactif** sur les **quadrilatères et triangles**.
 
 ## Lien pour tester
 
-[Accéder au QCM Geo1](https://github.com/mathieudesprez/QCM/QCM%20Geo1.html)
+[Accéder au QCM Geo1](https://mathieudesprez.github.io/QCM/QCM%20Geo1.html)
+[Accéder au QCM Geo1](https://mathieudesprez.github.io/QCM/QCMGeo1.html)
+
 
 ## Structure du projet
 - **index.html** : Le fichier principal contenant le QCM.
