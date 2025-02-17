@@ -32,10 +32,28 @@
             font-weight: bold;
             cursor: pointer;
             border-radius: 10px;
+            position: relative;
             transition: background 0.3s;
         }
         .square:hover {
             background-color: #2980b9;
+        }
+        .checkmark {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 15px;
+            height: 15px;
+            background-color: green;
+            border-radius: 50%;
+            display: none;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .square.answered {
+            animation: bounce 0.5s;
         }
         .modal {
             display: none;
@@ -60,43 +78,83 @@
             cursor: pointer;
             color: red;
         }
+        .input-zone {
+            margin-top: 10px;
+            padding: 5px;
+            width: 80%;
+            font-size: 16px;
+        }
+        .score {
+            font-size: 20px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <h2>Défis Interactifs</h2>
-    <div class="grid">
+    <p class="score">Score: <span id="score">0</span></p>
+    <div class="grid" id="grid">
         <script>
             const defis = [
-                "Résous cette énigme mathématique : 3x + 5 = 20, trouve x.",
-                "Dessine un triangle équilatéral et explique ses propriétés.",
-                "Donne un exemple de fraction équivalente à 2/3.",
-                "Écris une phrase avec le mot 'parallélogramme'.",
+                " (+7) + (-13) = ? ",
+                " (+7) - (-13) = ? ",
+                " (-7) - (-13) = ? ",
+                "7<sup>2</sup> = ?",
                 "Calcule l'aire d'un rectangle de 4 cm sur 7 cm.",
-                "Trouve un nombre premier entre 30 et 40.",
+                "Trouve un nombre premier entre 20 et 30.",
                 "Explique la différence entre un carré et un losange.",
                 "Écris la table de multiplication de 7 jusqu'à 10.",
                 "Nomme 3 angles particuliers en géométrie.",
                 "Donne un exemple de nombre en notation scientifique."
             ];
-
+            
+            const reponses = ["5", "Triangle avec 3 côtés égaux", "4/6", "Le parallélogramme est un quadrilatère.", "28 cm²", "23", "Un carré a des angles droits, un losange non.", "7x1=7, 7x2=14, ..., 7x10=70", "Angle droit, angle aigu, angle obtus", "1.23 x 10^4"];
+            
+            let score = 0;
+            
+            const grid = document.getElementById("grid");
             for (let i = 1; i <= 10; i++) {
-                document.write(`<div class='square' onclick='openModal(${i})'>${i}</div>`);
+                let square = document.createElement("div");
+                square.className = "square";
+                square.innerHTML = `${i} <div class='checkmark' id='checkmark${i}'></div>`;
+                square.onclick = function() { openModal(i); };
+                grid.appendChild(square);
             }
         </script>
     </div>
     <div class="modal" id="modal">
         <div class="modal-content">
             <p id="defi-text"></p>
-            <button class="close" onclick="closeModal()">Fermer</button>
+            <input type="text" id="user-answer" class="input-zone" placeholder="Votre réponse ici...">
+            <button class="close" onclick="checkAnswer()">Valider</button>
         </div>
     </div>
     <script>
+        let currentDefi = 0;
+        
         function openModal(num) {
-            document.getElementById("defi-text").textContent = defis[num - 1];
+            currentDefi = num - 1;
+            document.getElementById("defi-text").textContent = defis[currentDefi];
             document.getElementById("modal").style.display = "flex";
         }
+        
+        function checkAnswer() {
+            let userAnswer = document.getElementById("user-answer").value.trim();
+            if (userAnswer.toLowerCase() === reponses[currentDefi].toLowerCase()) {
+                score++;
+                document.getElementById("score").textContent = score;
+                document.getElementById(`checkmark${currentDefi + 1}`).style.display = "block";
+                document.querySelectorAll(".square")[currentDefi].classList.add("answered");
+                alert("Bonne réponse !");
+            } else {
+                alert("Mauvaise réponse. Réessayez !");
+            }
+            closeModal();
+        }
+        
         function closeModal() {
             document.getElementById("modal").style.display = "none";
+            document.getElementById("user-answer").value = "";
         }
     </script>
 </body>
