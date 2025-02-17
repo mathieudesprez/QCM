@@ -7,7 +7,8 @@ Voici la liste des QCM disponibles dans ce dépôt :
 - [QCM Triangle/Quadrilatère v1
 - QCM4emeGeo.html
 - Defi Math.html
-# QCM : Quadrilatères et Triangles
+- [Defi Math](https://mathieudesprez.github.io/QCM/Defi_Math.html)
+
 
 Ce projet propose un **QCM interactif** sur les **quadrilatères et triangles**. L'application est en **HTML, CSS et JavaScript**, avec un système de validation des réponses et une correction interactive.
 
